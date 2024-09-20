@@ -22,14 +22,14 @@ class MenusTableSeeder extends Seeder
                 'description' => 'Crispy romaine with Caesar dressing',
                 'price' => 7.99,
                 'image' => 'caesar_salad.jpg',
-                'category_name' => 'lunch',
+                'category_name' => 'main_dish',
             ],
             [
                 'name' => 'Steak Dinner',
                 'description' => 'Juicy steak with mashed potatoes',
                 'price' => 19.99,
                 'image' => 'steak_dinner.jpg',
-                'category_name' => 'dinner',
+                'category_name' => 'main_dish',
             ],
         ]);
     }

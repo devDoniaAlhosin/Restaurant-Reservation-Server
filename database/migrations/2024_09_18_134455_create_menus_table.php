@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('menus', function (Blueprint $table) {
-         $table->id();
+        $table->id()->autoIncrement();
         $table->string('name');
         $table->text('description')->nullable();
         $table->decimal('price', 10, 2);
         $table->string('image');
-        $table->enum('category_name', ['breakfast', 'lunch', 'dinner']);
+        $table->enum('category_name', ['breakfast', 'main_dish', 'drink','dessert']);
         $table->timestamps();
         });
     }

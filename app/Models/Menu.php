@@ -16,15 +16,17 @@ class Menu extends Model
         'category_name',
 
     ];
-    protected $casts = [
-        'price' => 'decimal:2',
-        'category_name' => 'string', // Enum as string
-    ];
-    // The scopeCategory() method allows you to easily filter menus based on
-    // the category_name. For example,
-    // if you want to retrieve all breakfast items, you can use this scope.
-    public function scopeCategory($query, $category)
-    {
-        return $query->where('category_name', $category);
-    }
+//     protected $casts = [
+//         'price' => 'decimal:2',
+//         'category_name' => 'string', // Enum as string
+//     ];
+
+//     // The scopeCategory() method allows you to easily filter menus based on
+//     // the category_name. For example,
+//     // if you want to retrieve all breakfast items, you can use this scope.
+//     public function scopeCategory($query, $category)
+//     {
+//         return $query->where('category_name', $category);
+//     }
+// }
 }
