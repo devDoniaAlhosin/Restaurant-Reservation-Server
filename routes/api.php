@@ -17,17 +17,18 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::middleware('user')->group(function () {
+        Route::patch('/user/update', [UserController::class, 'updateOwnUser']);
+    });
 
-Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::middleware('admin')->group(function () {
+        Route::get('/users', [UserController::class, 'index']);
+        Route::post('/admin/create-user', [UserController::class, 'createUser']);
+        Route::patch('/admin/update-user/{user}', [UserController::class, 'updateUser']); // Admin can update any user
+        Route::delete('/admin/delete-user/{user}', [UserController::class, 'deleteUser']);
 
-});
-Route::middleware(['auth:sanctum', 'user'])->group(function () {
-    Route::get('/user', [UserController::class, 'user']); // Loggedin User
-//    Route::get('/user/profile', [UserController::class, 'profile']);
-});
-
-
-Route::middleware('auth:sanctum')->group(function () {
-//    Route::get('/user', [UserController::class, 'user']);
+    });
+    Route::get('/user', [UserController::class, 'user']); // Logged-in User (admin - Normal user)
     Route::post('/logout', [UserController::class, 'logout']);
 });
