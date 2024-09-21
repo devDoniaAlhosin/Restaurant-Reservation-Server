@@ -7,11 +7,11 @@ use App\Models\Menu;
 
 class MenuController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Menu::all();
+        $perPage = $request->input('perPage', 5);
+        return Menu::paginate($perPage);
     }
-
 
 
     public function store(Request $request)
@@ -26,11 +26,6 @@ class MenuController extends Controller
 
         return Menu::create($fields);
 
-        if ($menu) {
-            return response()->json($menu, 201); // Respond with created status
-        } else {
-            return response()->json(['error' => 'Failed to create menu'], 500); // Respond with error status
-        }
     }
 
     public function show(Menu $menu){
