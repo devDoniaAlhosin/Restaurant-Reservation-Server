@@ -90,15 +90,26 @@ class UserController extends Controller
         $user = Auth::user();
         // Check user role
         if ($user->role == 'admin') {
-            // return response for admin
             $token = $user->createToken('AdminToken')->plainTextToken;
             $cookie = cookie('token', $token, 60*24);
-            return response()->json(['token' => $token,  'user' => $user ,'message' => 'Successfully Login'])->withCookie($cookie);
-        } else {
-            // return response for normal user
+            Log::info('Admin logged in: ', ['user' => $user->username]);
+            return response()->json([
+                'token' => $token,
+                'user' => $user,
+                'message' => 'Admin Successfully Logged In'
+            ])->withCookie($cookie);
+        } elseif ($user->role == 'user') {
             $token = $user->createToken('UserToken')->plainTextToken;
             $cookie = cookie('token', $token, 60*24);
-            return response()->json(['token' => $token, 'message' => 'Successfully Login'])->withCookie($cookie);
+            Log::info('User logged in: ', ['user' => $user->username]);
+            return response()->json([
+                'token' => $token,
+                'user' => $user,
+                'message' => 'User Successfully Logged In'
+            ])->withCookie($cookie);
+        } else {
+            Log::error('Unauthorized role detected: ', ['role' => $user->role]);
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
     }
@@ -107,7 +118,7 @@ class UserController extends Controller
     {
         // Check if the user is authenticated
         if (Auth::check()) {
-            $cookie = Cookie::forget('jwt');
+            $cookie = Cookie::forget('token');
             Auth::user()->tokens()->delete();
             return response()->json(['message' => 'Logged out successfully'])->withCookie($cookie);
         } else {
@@ -136,7 +147,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'role' => 'required|in:user,admin',  //  role is 'user' or 'admin'
-            'phone' => 'required',
+            'phone' => 'sometimes',
             'address' => 'nullable|min:5|max:100',
             "image" => "nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048"
 
@@ -170,10 +181,10 @@ class UserController extends Controller
 
         // Validate input fields
         $request->validate([
-            'username' => 'sometimes|min:4|unique:users,username,' . $user->id,
-            'email' => 'sometimes|email|unique:users,email,' . $user->id,
-            'phone' => 'sometimes|numeric',
-            'password' => 'sometimes|min:6',
+            'username' => 'required|min:4|unique:users,username,' . $user->id,
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'sometimes',
+            'password' => 'required|min:6',
             'address' => 'sometimes|nullable|min:5|max:100',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048|nullable'
         ]);
@@ -222,7 +233,7 @@ class UserController extends Controller
         $request->validate([
             'username' => 'sometimes|min:4|unique:users,username,' . $user->id,
             'email' => 'sometimes|email|unique:users,email,' . $user->id,
-            'phone' => 'sometimes|numeric',
+            'phone' => 'sometimes|regex:/^(\+?[0-9\s\-]{7,15})$/',
             'password' => 'sometimes|min:6',
             'address' => 'sometimes|nullable|min:5|max:100',
             'role' => 'sometimes|in:user,admin',
