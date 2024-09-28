@@ -19,17 +19,19 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array<int, string>
      */
+    use HasApiTokens, Notifiable;
     protected $fillable = [
-
-            'name',
+            'username',
             'email',
             'password',
             'address',
             'phone',
             'image',
-            'role',
-
+            'role'
+            // 'google_id',
+            // 'email_verified_at'
     ];
+
     public function bookings():HasMany {
         return $this->hasMany(related: Booking::class);
     }
