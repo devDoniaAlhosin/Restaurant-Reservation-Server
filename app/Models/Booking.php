@@ -18,6 +18,7 @@ class Booking extends Model
         'total_person',
         'status',
         'notes',
+        'email_sent',
     ];
     protected $casts = [
         'date_time' => 'datetime',

@@ -1,29 +1,60 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
+use App\Notifications\BookingStatusMail;
+use Illuminate\Support\Carbon;
+
 class BookingController extends Controller
 {
     public function __construct()
-{
-    $this->middleware('auth:sanctum')->only(['userBooking']);
-}
+    {
+        $this->middleware('auth:sanctum')->only(['userBooking']);
+    }
 
-    public function userBooking(Request $request){
+    public function userBooking(Request $request)
+    {
+        // Get current logged-in user
+        $user = $request->user();
+
+        // Validate booking details
         $request->validate([
-            'username' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string','max:15'],
-            'date' => ['required', 'date'],
-            'time' => ['required','date_format:H:i'],
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($user) {
+                    if ($value !== $user->username) {
+                        $fail('The ' . $attribute . ' must match the logged-in user\'s username.');
+                    }
+                }
+            ],
+            'phone' => [
+                'required',
+                'string',
+                'max:15',
+                function ($attribute, $value, $fail) use ($user) {
+                    if ($value !== $user->phone) {
+                        $fail('The ' . $attribute . ' must match the logged-in user\'s phone number.');
+                    }
+                }
+            ],
+            'date' => [
+                'required',
+                'date',
+                'after_or_equal:today', // No past dates
+                'before_or_equal:' . Carbon::now()->addMonths(3)->format('Y-m-d') // Limit to 3 months in advance
+            ],
+            'time' => ['required', 'date_format:h:i A'], // Enforce '11:20 PM' format
             'total_person' => ['required', 'integer', 'min:1'],
-
         ]);
+
+        // Create a new booking
         $booking = new Booking([
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'username' => $request->username,
             'phone' => $request->phone,
             'date_time' => $request->date . ' ' . $request->time,
@@ -33,71 +64,37 @@ class BookingController extends Controller
         ]);
 
         $booking->save();
-        return response()->json(['message' => 'Booking created successfully'], 201);
 
+        return response()->json(['message' => 'Booking created successfully'], 201);
     }
 
-
     public function updateStatus(Request $request, $id)
-{
-    $request->validate([
-        'status' => ['required', 'in:accepted,rejected'],
-        'notes' => ['nullable', 'string']
-    ]);
+    {
+        $request->validate([
+            'status' => ['required', 'in:accepted,rejected'],
+            'notes' => ['nullable', 'string']
+        ]);
 
-    $booking = Booking::findOrFail($id);
+        $booking = Booking::findOrFail($id);
 
-    // Update booking status
-    $booking->status = $request->status;
-    $booking->notes = $request->notes;
-    $booking->save();
+        // Update booking status
+        $booking->status = $request->status;
+        $booking->notes = $request->notes;
+        $booking->save();
 
-    // Notify user
-    $user = $booking->user;
-    $this->sendNotification($user, $booking);
+        // Notify the user via email
+        $user = $booking->user;
+        $message = ($booking->status === 'accepted')
+            ? "Your booking has been accepted. Below are the details."
+            : "Your booking has been rejected. Please see alternative dates.";
 
-    return response()->json(['message' => 'Booking status updated successfully']);
-}
+        // Trigger the email notification
+        $user->notify(new BookingStatusMail($booking, $message));
 
+        // Mark email as sent
+        $booking->email_sent = true;
+        $booking->save();
 
-
-
-
-
-
-    // // Method to send notification email to the user
-
-    // protected function sendNotification(User $user, Booking $booking)
-    // {
-    //     $status = $booking->status;
-    //     $message = ($status === 'accepted')
-    //                 ? "Your booking has been accepted."
-    //                 : "Your booking has been rejected.";
-
-    //     // Send Email Notification
-    //     Mail::to($user->email)->send(new \App\Mail\BookingStatusUpdated($booking, $message));
-
-    //     // Store a notification in the database for frontend display
-    //     $user->notifications()->create([
-    //         'message' => $message,
-    //         'is_read' => false,
-    //     ]);
-    // }
-    protected function sendNotification(User $user, Booking $booking)
-{
-    $status = $booking->status;
-    $message = ($status === 'accepted')
-                ? "Your booking has been accepted."
-                : "Your booking has been rejected.";
-
-    // Send the notification to the user via email
-    $user->notify(new \App\Notifications\BookingStatusUpdated($booking, $message));
-
-    // Store the notification in the database if you want to show it on the frontend
-    $user->notifications()->create([
-        'message' => $message,
-        'is_read' => false,
-    ]);
-}
-
+        return response()->json(['message' => 'Booking status updated and email sent'], 200);
+    }
 }
