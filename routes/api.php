@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
 use Laravel\Socialite\Facades\Socialite;
-
+use App\Http\Controllers\BookingController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,6 +34,12 @@ Route::post('/login', [UserController::class, 'login']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/bookings', [BookingController::class, 'userBooking']);
+    Route::patch('/bookings/{id}/status', [BookingController::class, 'updateStatus']); // For updating booking status
+    Route::get('/user/notifications', [NotificationController::class, 'getUserNotifications']);
+    Route::post('/send-notification/{id}', [BookingController::class, 'sendNotification']);
+
+
 
     Route::middleware('user')->group(function () {
         Route::patch('/user/update', [UserController::class, 'updateOwnUser']);
@@ -47,6 +55,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
     Route::get('/user', [UserController::class, 'user']); // Logged-in User (admin - Normal user)
     Route::post('/logout', [UserController::class, 'logout']);
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
 });
 
 

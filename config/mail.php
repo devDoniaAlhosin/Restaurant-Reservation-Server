@@ -45,6 +45,7 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
         ],
 
+
         'ses' => [
             'transport' => 'ses',
         ],
@@ -98,7 +99,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'address' => env('MAIL_FROM_ADDRESS', 'nourantest24@gmail.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
