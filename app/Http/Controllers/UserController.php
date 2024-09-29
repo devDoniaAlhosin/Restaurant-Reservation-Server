@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 use Cloudinary\Cloudinary;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Api\Upload\UploadApi;
-
+use Illuminate\Auth\Events\Registered;
 use App\Models\User;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\LoginNotification;
 
 
 
@@ -19,7 +20,7 @@ class UserController extends Controller
     // Get  all users
     public function index()
     {
-        $users = User::all();
+       $users = User::orderBy('created_at', 'desc')->get();
         return response()->json($users);
 
     }
@@ -49,6 +50,7 @@ class UserController extends Controller
                     'secure' => true
                 ]
             ]);
+
             // Validate
             $request->validate([
                 'username' => 'required|unique:users|min:4',
@@ -59,19 +61,31 @@ class UserController extends Controller
                 "image" => "nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048"
             ]);
 
-            // Handle image upload
-            $image_url = null;
-            if ($request->hasFile('image')) {
-                $uploadedFile = $request->file('image');
-                try {
-                    // Initialize Cloudinary configuration if not already done
-                    $cloudinary = new Cloudinary();
-                    $uploadResult = $cloudinary->uploadApi()->upload($uploadedFile->getRealPath());
-                    $image_url = $uploadResult['secure_url'];
-                } catch (\Exception $e) {
-                    return response()->json(['message' => 'Image upload failed', 'error' => $e->getMessage()], 500);
-                }
+
+      // Handle image upload
+        $image_url = null;
+        if ($request->hasFile('image')) {
+            $uploadedFile = $request->file('image');
+            try {
+
+                $cloudinary = new Cloudinary();
+                $uploadResult = $cloudinary->uploadApi()->upload($uploadedFile->getRealPath());
+                $image_url = $uploadResult['secure_url'];
+
+
+                \Log::info('Cloudinary upload success:', [
+                    'secure_url' => $uploadResult['secure_url'],
+                    'public_id' => $uploadResult['public_id'],
+                    'uploadResult' => json_encode($uploadResult)
+                ]);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Image upload failed', 'error' => $e->getMessage()], 500);
             }
+        }
+
+
+
+
 
             // Create
             $user = User::create([
@@ -82,6 +96,7 @@ class UserController extends Controller
                 'phone' => $request->phone,
                 'image' => $image_url,
             ]);
+            // event(new Registered($user));
             //  token
             $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -92,7 +107,7 @@ class UserController extends Controller
 
             // Return success response
             return response()->json([
-                'message' => 'Registration successful',
+                'message' => 'Registration successful. Please verify your email to activate your account.',
                 'token' => $token,
                 'user' => $user
             ])->withCookie($cookie);
@@ -124,6 +139,8 @@ class UserController extends Controller
             $token = $user->createToken('AdminToken')->plainTextToken;
             $cookie = cookie('token', $token, 60*24);
             Log::info('Admin logged in: ', ['user' => $user->username]);
+
+
             return response()->json([
                 'token' => $token,
                 'user' => $user,

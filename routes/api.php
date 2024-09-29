@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\UserController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Mail;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -18,8 +21,16 @@ use Laravel\Socialite\Facades\Socialite;
 |
 */
 
-Route::post('/register', [UserController::class, 'register']);
-Route::post('/login', [UserController::class, 'login']);
+
+Route::middleware(['auth:sanctum'])->group(function (){
+    Route::post('/contact', [ContactController::class, 'store']);
+}
+
+);
+
+
+//Route::post('/register', [UserController::class, 'register']);
+//Route::post('/login', [UserController::class, 'login']);
 
 
 // // Google Auth
@@ -34,6 +45,7 @@ Route::post('/login', [UserController::class, 'login']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
+
     Route::middleware('user')->group(function () {
         Route::patch('/user/update', [UserController::class, 'updateOwnUser']);
     });
@@ -45,9 +57,22 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::patch('/admin/update-user/{user}', [UserController::class, 'updateUser']); // Admin can update any user && can't change his role to user
         Route::delete('/admin/delete-user/{user}', [UserController::class, 'deleteUser']); // cant delete his account
 
+
+        Route::get('/admin/contacts', [ContactController::class, 'index'])->middleware('auth:admin');
+        Route::delete('/admin/contacts/{id}', [ContactController::class, 'destroy']);
     });
     Route::get('/user', [UserController::class, 'user']); // Logged-in User (admin - Normal user)
-    Route::post('/logout', [UserController::class, 'logout']);
+    // Route::post('/logout', [UserController::class, 'logout']);
 });
 
+Route::get('/send-test-email', function () {
+    $user = Auth::user();  // For logged-in users, or replace with a test email
+    Mail::raw('This is a test email!', function ($message) use ($user) {
+        $message->to($user->email)
+            ->subject('Test Email')
+            ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
+    });
+
+    return 'Test email sent successfully!';
+});
 
