@@ -5,8 +5,10 @@ use App\Models\Booking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
-use App\Notifications\BookingStatusMail;
+// use App\Notifications\BookingStatusMail;
 use Illuminate\Support\Carbon;
+use App\Mail\BookingStatusMail;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
@@ -21,7 +23,7 @@ class BookingController extends Controller
         $user = $request->user();
 
         // Validate booking details
-        $request->validate([
+        $validatedData = $request->validate([
             'username' => [
                 'required',
                 'string',
@@ -50,20 +52,33 @@ class BookingController extends Controller
             ],
             'time' => ['required', 'date_format:h:i A'], // Enforce '11:20 PM' format
             'total_person' => ['required', 'integer', 'min:1'],
+            'notes' => ['nullable', 'string']
         ]);
+
 
         // Create a new booking
-        $booking = new Booking([
-            'user_id' => $user->id,
-            'username' => $request->username,
-            'phone' => $request->phone,
-            'date_time' => $request->date . ' ' . $request->time,
-            'total_person' => $request->total_person,
-            'status' => 'pending',
-            'notes' => $request->input('notes', '')
-        ]);
+        // $booking = new Booking([
+        //     'user_id' => $user->id,
+        //     'username' => $request->username,
+        //     'phone' => $request->phone,
+        //     'date_time' => $request->date . ' ' . $request->time,
+        //     'total_person' => $request->total_person,
+        //     'status' => 'pending',
+        //     'notes' => $request->input('notes', '')
+        // ]);
 
-        $booking->save();
+        // $booking->save();
+
+        // return response()->json(['message' => 'Booking created successfully'], 201);
+        $booking = Booking::create([
+            'user_id' => $user->id,
+            'username' => $user->username,
+            'phone' => $user->phone,
+            'date_time' => $validatedData['date'] . ' ' . $validatedData['time'],
+            'total_person' => $validatedData['total_person'],
+            'status' => 'pending',
+            'notes' => $validatedData['notes'] ?? '',
+        ]);
 
         return response()->json(['message' => 'Booking created successfully'], 201);
     }
@@ -84,12 +99,17 @@ class BookingController extends Controller
 
         // Notify the user via email
         $user = $booking->user;
-        $message = ($booking->status === 'accepted')
+        $messageContent = ($booking->status === 'accepted')
             ? "Your booking has been accepted. Below are the details."
             : "Your booking has been rejected. Please see alternative dates.";
 
-        // Trigger the email notification
-        $user->notify(new BookingStatusMail($booking, $message));
+        try {
+            Mail::to($user->email)->send(new BookingStatusMail($booking, $messageContent));
+            Log::info('Mail sent successfully to: ' . $user->email);
+        } catch (\Exception $e) {
+            Log::error('Failed to send email: ' . $e->getMessage());
+        }
+
 
         // Mark email as sent
         $booking->email_sent = true;
@@ -97,4 +117,8 @@ class BookingController extends Controller
 
         return response()->json(['message' => 'Booking status updated and email sent'], 200);
     }
+
+
+
+
 }
