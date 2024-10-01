@@ -14,7 +14,6 @@ class BookingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->only(['userBooking']);
     }
 
     public function userBooking(Request $request)
@@ -82,7 +81,13 @@ class BookingController extends Controller
 
         return response()->json(['message' => 'Booking created successfully'], 201);
     }
-
+public function getallbookings(){
+    $booking=Booking::all();
+    if ($booking->isEmpty()) {
+        return response()->json(['message' => 'No bookings are found'], 404);
+    }
+    return response()->json($booking,200);
+}
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
