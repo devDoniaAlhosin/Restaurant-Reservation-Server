@@ -123,7 +123,100 @@ public function getallbookings(){
         return response()->json(['message' => 'Booking status updated and email sent'], 200);
     }
 
+    public function getUserBookings(Request $request)
+    {
+        $user = $request->user();
 
+        // Retrieve bookings for the authenticated user
+        $bookings = Booking::where('user_id', $user->id)->get();
+
+        if ($bookings->isEmpty()) {
+            return response()->json(['message' => 'No bookings found for this user.'], 404);
+        }
+
+        return response()->json($bookings, 200);
+    }
+
+
+    public function deleteBooking($id) {
+        // Check if the booking exists
+        $booking = Booking::find($id);
+
+        if (!$booking) {
+            return response()->json(['message' => 'This booking request does not exist'], 404); // Use 404 for not found
+        }
+
+        // Delete the booking
+        $booking->delete(); // Use the model's delete method
+
+        return response()->json(['message' => 'This booking request has been deleted successfully'], 200); // 200 for success
+    }
+    // for the user to update his own data while pending
+    // public function updateUserBooking(Request $request, $id)
+    // {
+    //     \Log::info('Updating booking with ID: ' . $id, ['request' => $request->all()]); // Log incoming data
+    //     // Validate incoming request
+    //     $request->validate([
+    //         'date_time' => 'required|date|after:now',
+    //         'total_person' => 'required|integer|min:1',
+    //         'notes' => 'nullable|string',
+    //     ]);
+
+    //     // Find the booking by ID
+    //     $booking = Booking::findOrFail($id);
+
+    //     // Check if the authenticated user is the owner of the booking
+    //     if ($booking->user_id !== $request->user()->id) {
+    //         return response()->json(['error' => 'Unauthorized'], 403);
+    //     }
+
+    //     // Combine date_time and time to create a complete datetime
+    //     $dateTime = Carbon::parse($request->date_time . ' ' . $request->time);
+
+    //     // Update booking details
+    //     $booking->date_time = $dateTime; // Store the complete datetime
+    //     $booking->total_person = $request->total_person;
+    //     $booking->notes = $request->notes;
+
+    //     // Save changes
+    //     $booking->save();
+
+    //     return response()->json($booking, 200);
+    // }
+
+    public function updateUserBooking(Request $request, $id)
+{
+    \Log::info('Updating booking with ID: ' . $id, ['request' => $request->all()]); // Log incoming data
+
+    // Validate incoming request
+    $request->validate([
+        'date' => 'required|date|after:now',
+        'time' => 'required|date_format:h:i A', // Ensure time is in the correct format
+        'total_person' => 'required|integer|min:1',
+        'notes' => 'nullable|string',
+    ]);
+
+    // Find the booking by ID
+    $booking = Booking::findOrFail($id);
+
+    // Check if the authenticated user is the owner of the booking
+    if ($booking->user_id !== $request->user()->id) {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
+
+    // Combine date and time to create a complete datetime
+    $dateTime = Carbon::createFromFormat('Y-m-d h:i A', $request->date . ' ' . $request->time);
+
+    // Update booking details
+    $booking->date_time = $dateTime; // Store the complete datetime
+    $booking->total_person = $request->total_person;
+    $booking->notes = $request->notes;
+
+    // Save changes
+    $booking->save();
+
+    return response()->json($booking, 200);
+}
 
 
 }
