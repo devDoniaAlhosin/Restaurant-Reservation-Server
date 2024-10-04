@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
 
 
@@ -10,11 +9,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Mail;
-
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\MenuController;
 
 
-
+//menu api
+Route::apiResource('menu', MenuController::class);
 
 
 //Route::post('/register', [UserController::class, 'register']);
