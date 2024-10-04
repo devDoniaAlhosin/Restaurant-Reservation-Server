@@ -13,7 +13,8 @@ use Illuminate\Validation\Rules;
 use Cloudinary\Cloudinary;
 use Cloudinary\Configuration\Configuration;
 use Illuminate\Http\JsonResponse;
-
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 class RegisteredUserController extends Controller
 {
     /**
@@ -33,6 +34,16 @@ class RegisteredUserController extends Controller
                 'secure' => true
             ]
         ]);
+        if (empty(env('CLOUDINARY_CLOUD_NAME'))) {
+            Log::error('Cloudinary environment variables are not set.');
+        }
+
+        Log::info('Cloudinary Config:', [
+            'CLOUDINARY_CLOUD_NAME' => env('CLOUDINARY_CLOUD_NAME'),
+            'CLOUDINARY_API_KEY' => env('CLOUDINARY_API_KEY'),
+            'CLOUDINARY_API_SECRET' => env('CLOUDINARY_API_SECRET'),
+        ]);
+
 
         $request->validate([
             'username' => ['required', 'string', 'min:4', 'unique:users'],
@@ -49,18 +60,18 @@ class RegisteredUserController extends Controller
             try {
                 $cloudinary = new Cloudinary();
                 $uploadResult = $cloudinary->uploadApi()->upload($uploadedFile->getRealPath());
-
-                \Log::info('Cloudinary upload response:', ['uploadResult' => $uploadResult]);
+                Log::info('Cloudinary upload response:', ['uploadResult' => $uploadResult]);
 
                 // Ensure the secure URL is available
                 if (isset($uploadResult['secure_url'])) {
                     $image_url = $uploadResult['secure_url'];
-                    \Log::info('Image uploaded successfully:', ['secure_url' => $image_url]);
+                    Log::info('Image uploaded successfully:', ['secure_url' => $image_url]);
                 } else {
-                    \Log::error('Cloudinary upload did not return a secure URL');
+                    Log::error('Cloudinary upload did not return a secure URL');
                 }
             } catch (\Exception $e) {
-                \Log::error('Image upload failed:', ['error' => $e->getMessage()]);
+                Log::error('Image upload failed:', ['error' => $e->getMessage(),'stack' => $e->getTraceAsString()]);
+
                 return response()->json(['message' => 'Image upload failed', 'error' => $e->getMessage()], 500);
             }
         }
@@ -85,10 +96,20 @@ class RegisteredUserController extends Controller
 
         $cookie = cookie('token', $token, 60 * 24, null, null, true, true);
 
+        $signedUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $user->id, 'hash' => sha1($user->email)]
+        );
+
+        // Log the signed URL for debugging
+        Log::info('Signed URL for email verification: ' . $signedUrl);
+
          return response()->json([
             'message' => 'Registration successful. Please verify your email to activate your account.',
             'token' => $token,
             'user' => $user,
+             'verification_url' => $signedUrl,
         ])->withCookie($cookie);
     }
 }

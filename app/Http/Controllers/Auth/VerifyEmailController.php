@@ -8,6 +8,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\URL;
 
 class VerifyEmailController extends Controller
 {
@@ -18,22 +19,20 @@ class VerifyEmailController extends Controller
     // RedirectResponse ,JsonResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
-//            return redirect()->intended(
-//                config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
-//            );
-//            return $this->handleResponse($request, 'Email address already verified.');
             return response()->json('Email address already verified');
+//            $frontendUrl = config('app.frontend_url') . '/verify-email?message=email_already_verified';
+//            return redirect()->to($frontendUrl);
         }
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
-        }
-//        return redirect()->intended(config('app.frontend_url') . RouteServiceProvider::HOME . '?verified=1');
 
-//        return redirect()->intended(
-//            config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
-//        );
+        }
+
         return response()->json('Email address successfully verified');
+//        $verificationUrl = config('app.frontend_url') . "/verify-email?verificationUrl=" . urlencode($request->fullUrl());
+//
+//        return redirect()->to($verificationUrl);
     }
 
 

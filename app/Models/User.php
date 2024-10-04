@@ -27,9 +27,9 @@ class User extends Authenticatable implements MustVerifyEmail
             'address',
             'phone',
             'image',
-            'role'
-            // 'google_id',
-            // 'email_verified_at'
+            'role',
+             'google_id',
+             'email_verified_at'
     ];
 
     public function bookings():HasMany {

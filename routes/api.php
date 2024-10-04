@@ -22,11 +22,6 @@ use Illuminate\Support\Facades\Mail;
 */
 
 
-Route::middleware(['auth:sanctum'])->group(function (){
-    Route::post('/contact', [ContactController::class, 'store']);
-}
-
-);
 
 
 //Route::post('/register', [UserController::class, 'register']);
@@ -34,18 +29,12 @@ Route::middleware(['auth:sanctum'])->group(function (){
 
 
 // // Google Auth
-// Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle']);
-
-// Route::get('/auth/callback/google', [GoogleController::class, 'handleGoogleCallback']);
-// // Route::get('/auth/google/callback', function (Request $request)  {
-// //     dd(Socialite::driver('google')->stateless()->user());
-
-// // });
+Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-
-
+    Route::post('/contact', [ContactController::class, 'store']);
     Route::middleware('user')->group(function () {
         Route::patch('/user/update', [UserController::class, 'updateOwnUser']);
     });
@@ -65,14 +54,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Route::post('/logout', [UserController::class, 'logout']);
 });
 
-Route::get('/send-test-email', function () {
-    $user = Auth::user();  // For logged-in users, or replace with a test email
-    Mail::raw('This is a test email!', function ($message) use ($user) {
-        $message->to($user->email)
-            ->subject('Test Email')
-            ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
-    });
 
-    return 'Test email sent successfully!';
-});
 

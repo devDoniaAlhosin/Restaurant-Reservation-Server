@@ -28,7 +28,7 @@ Route::post('/reset-password', [NewPasswordController::class, 'store'])
                  ->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])
                  ->name('verification.verify');
 
- Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+     Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
                  ->middleware(['auth:sanctum', 'throttle:6,1'])
                  ->name('verification.send');
 

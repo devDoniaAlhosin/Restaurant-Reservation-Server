@@ -175,13 +175,12 @@ class UserController extends Controller
     }
 
 
-//    // Get Authenticated User
+  // Get Authenticated User
     public function user()
     {
         if(!Auth::check()){
             return response()->json(['message' => 'User is not authenticated'], 401);
         }
-
         return response()->json(['user' => Auth::user()]);
 
     }
@@ -250,7 +249,6 @@ class UserController extends Controller
 {
     $user = Auth::user();
 
-    // Validate input fields
     $request->validate([
         'username' => 'required|min:4|unique:users,username,' . $user->id,
         'email' => 'required|email|unique:users,email,' . $user->id,
@@ -267,7 +265,6 @@ class UserController extends Controller
         return response()->json(['message' => 'Old password is incorrect.'], 403);
     }
 
-    // Handle image upload
     $image_url = null;
     if ($request->hasFile('image')) {
         try {
@@ -310,9 +307,6 @@ class UserController extends Controller
     if ($request->hasFile('image')) {
         $user->image = $image_url;
     }
-
-
-    // Save the updated user data
     $user->save();
 
     return response()->json(['message' => 'User updated successfully', 'user' => $user]);
@@ -322,6 +316,8 @@ class UserController extends Controller
 // By Admin
 public function updateUser(Request $request, User $user)
 {
+    Log::info('Form data:', ['data' => $request->all()]);
+    Log::info('File upload data:', ['file' => $request->file('image')]);
     $currentUser = auth()->user();
 
     // Prevent admin from changing their own role to 'user'
@@ -348,12 +344,12 @@ public function updateUser(Request $request, User $user)
             $uploadResult = $cloudinary->uploadApi()->upload($uploadedFile->getRealPath());
 
             // Log upload result for debugging
-            \Log::info('Cloudinary upload result: ', $uploadResult);
+            Log::info('Cloudinary upload result: ', $uploadResult);
 
             $user->image = $uploadResult['secure_url'];  // Directly assign the uploaded URL to the user
         } catch (\Exception $e) {
             // Log error
-            \Log::error('Cloudinary upload failed: ' . $e->getMessage());
+            Log::error('Cloudinary upload failed: ' . $e->getMessage());
             return response()->json(['error' => 'Image upload failed: ' . $e->getMessage()], 500);
         }
     }
