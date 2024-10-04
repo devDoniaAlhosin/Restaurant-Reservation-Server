@@ -28,9 +28,9 @@ Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallb
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/contact', [ContactController::class, 'store']);    Route::post('/bookings', [BookingController::class, 'userBooking']);
+    Route::post('/contact', [ContactController::class, 'store']);
+     Route::post('/bookings', [BookingController::class, 'userBooking']);
     Route::patch('/bookings/{id}/status', [BookingController::class, 'updateStatus']); // For updating booking status
-    // Route::get('/user/notifications', [NotificationController::class, 'getUserNotifications']);
     Route::post('/send-notification/{id}', [BookingController::class, 'sendNotification']);
 
 
