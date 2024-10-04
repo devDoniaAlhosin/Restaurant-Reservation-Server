@@ -1,21 +1,22 @@
 <!-- resources/views/emails/booking_status.blade.php -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Booking Status Update</title>
 </head>
 <body>
-<h1>{{ $messageContent }}</h1>
-<p><strong>Booking Details:</strong></p>
-<p>Date and Time: {{ $booking->date_time }}</p>
-<p>Number of people: {{ $booking->total_person }}</p>
-@if($booking->status === 'accepted')
-    <p>Payment Details: [Include payment information here]</p>
-@else
-    <p>Suggested Date/Time: [Include alternative booking suggestion here]</p>
-@endif
+    <h1>Booking Status Update</h1>
+    <p>{{ $messageContent }}</p>
+    <p>Booking Details:</p>
+    <ul>
+        <li>Username: {{ $booking->username }}</li>
+        <li>Phone: {{ $booking->phone }}</li>
+        <li>Date and Time: {{ $booking->date_time }}</li>
+        <li>Total Persons: {{ $booking->total_person }}</li>
+        <li>Status: {{ $booking->status }}</li>
+        <li>Notes: {{ $booking->notes }}</li>
+    </ul>
 </body>
 </html>
+
 

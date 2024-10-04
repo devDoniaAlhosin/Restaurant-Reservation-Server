@@ -17,6 +17,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
+<<<<<<< HEAD
 //Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle']);
 //Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 // require __DIR__.'/auth.php';
+=======
+// routes/web.php
+
+use App\Http\Controllers\GoogleController;
+use Illuminate\Support\Facades\Mail;
+
+Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+
+>>>>>>> origin/server-booking
