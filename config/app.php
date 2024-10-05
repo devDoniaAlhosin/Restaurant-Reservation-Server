@@ -16,6 +16,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'frontend_name' => env('FRONTEND_NAME', 'BistroBliss'),
 
     /*
     |--------------------------------------------------------------------------

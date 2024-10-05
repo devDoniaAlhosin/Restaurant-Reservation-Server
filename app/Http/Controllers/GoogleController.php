@@ -73,11 +73,8 @@ class GoogleController extends Controller
             $cookie = cookie('token', $token, 60*24, '/', 'localhost', false, true, false, 'None');
             $userCookie = cookie('user', $userData, 60*24, '/', 'localhost', false, true, false, 'None');
 
-            return redirect(config('app.frontend_url') . '/')->withCookies([$cookie, $userCookie]);
-//            return response()->json([
-//                'token' => $token,
-//                'user' => $user,
-//            ]);
+            $redirectUrl = config('app.frontend_url') . '?token=' . urlencode($token) . '&user=' . urlencode(json_encode($user));
+            return redirect()->away($redirectUrl);
 
 
         } catch (\Exception $e) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Menu;
+use Illuminate\Support\Facades\Log;
 
 class MenuController extends Controller
 {
@@ -41,6 +42,8 @@ class MenuController extends Controller
             'image' => ['required', 'string']
         ]);
         $menu = $menu->update($fields);
+        Log::info('Incoming request data:', $request->all());
+
         return $menu;
     }
 

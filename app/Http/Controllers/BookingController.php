@@ -186,7 +186,7 @@ public function getallbookings(){
 
     public function updateUserBooking(Request $request, $id)
 {
-    \Log::info('Updating booking with ID: ' . $id, ['request' => $request->all()]); // Log incoming data
+    Log::info('Updating booking with ID: ' . $id, ['request' => $request->all()]); // Log incoming data
 
     // Validate incoming request
     $request->validate([
