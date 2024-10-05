@@ -14,17 +14,65 @@ use Illuminate\Support\Facades\Log;
 use App\Notifications\LoginNotification;
 
 
-
+/**
+ * @OA\Info(
+ *      version="1.0.0",
+ *      title="User Management API",
+ *      description="API for user registration, login, and management.",
+ *      @OA\Contact(
+ *          email="your_email@example.com"
+ *      ),
+ *      @OA\License(
+ *          name="Apache 2.0",
+ *          url="https://www.apache.org/licenses/LICENSE-2.0.html"
+ *      )
+ * )
+ */
 class UserController extends Controller
 {
-    // Get  all users
+     /**
+     * @OA\Get(
+     *     path="/api/users",
+     *     tags={"Users"},
+     *     summary="Get all users",
+     *     @OA\Response(
+     *         response=200,
+     *         description="A list of users",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/User"))
+     *     ),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
     public function index()
     {
        $users = User::orderBy('created_at', 'desc')->get();
         return response()->json($users);
 
     }
-    // get Single User
+
+
+
+    /**
+     * @OA\Get(
+     *     path="/api/admin/get-user/{user}",
+     *     tags={"Users"},
+     *     summary="Get a user by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User found",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     *     @OA\Response(response=404, description="User not found"),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
+
     public function getUser($id)
 {
     $user = User::find($id);
@@ -175,16 +223,24 @@ class UserController extends Controller
     }
 
 
-  // Get Authenticated User
-    public function user()
-    {
-        if(!Auth::check()){
-            return response()->json(['message' => 'User is not authenticated'], 401);
-        }
-        return response()->json(['user' => Auth::user()]);
-
-    }
-
+        /**
+     * @OA\Post(
+     *     path="/api/admin/create-user",
+     *     tags={"Users"},
+     *     summary="Create a new user by admin",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/UserCreationRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/UserResponse")
+     *     ),
+     *     @OA\Response(response=422, description="Validation Error"),
+     *     @OA\Response(response=500, description="Internal Server Error")
+     * )
+     */
 
     // Admin Create User
     public function createUser(Request $request)
