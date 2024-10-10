@@ -15,13 +15,67 @@ use Cloudinary\Configuration\Configuration;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
+use App\Http\Controllers\API\UserSchema;
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\Tag(
+ *     name="Auth",
+ *     description="Operations about user authentication"
+ * )
+ */
 class RegisteredUserController extends Controller
 {
-    /**
+   /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Register a new user",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"username", "email", "password", "phone"},
+     *             @OA\Property(property="username", type="string", example="john_doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="strong_password"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="strong_password"),
+     *             @OA\Property(property="phone", type="string", example="+1234567890"),
+     *             @OA\Property(property="address", type="string", example="123 Main St"),
+     *             @OA\Property(property="image", type="string", format="binary"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Registration successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Registration successful. Please verify your email to activate your account."),
+     *             @OA\Property(property="token", type="string", example="your_token_here"),
+     *             @OA\Property(property="user", ref="#/components/schemas/User"),
+     *             @OA\Property(property="verification_url", type="string", example="https://example.com/verify?token=your_token_here"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The username has already been taken."),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Image upload failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Image upload failed"),
+     *         )
+     *     )
+     * )
+     *
      * Handle an incoming registration request.
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @param \Illuminate\Http\Request $request The incoming request containing registration data.
+     * @return \Illuminate\Http\JsonResponse A JSON response indicating success or failure with a verification URL and user token.
      */
+
     public function store(Request $request): JsonResponse
     {
         Configuration::instance([

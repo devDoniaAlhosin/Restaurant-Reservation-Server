@@ -32,6 +32,8 @@ return [
     |            "postmark", "log", "array", "failover"
     |
     */
+    'admin_email' => env('MAIL_ADMIN_EMAIL', 'bistrobless@gmail.com'),
+
 
     'mailers' => [
         'smtp' => [

@@ -12,8 +12,47 @@ use Illuminate\Support\Facades\Log;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Handle an incoming authentication request.
+  /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="User Login",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"login", "password"},
+     *             @OA\Property(property="login", type="string", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", example="yourpassword")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful Login",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string", example="your-token-string"),
+     *             @OA\Property(property="user", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="username", type="string", example="username"),
+     *                 @OA\Property(property="role", type="string", example="user")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="User Successfully Logged In")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Invalid Login Credentials",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Invalid Login Credentials")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthorized")
+     *         )
+     *     )
+     * )
      */
     public function store(Request $request): JsonResponse
     {
@@ -70,8 +109,39 @@ class AuthenticatedSessionController extends Controller
 
     }
 
-    /**
-     * Destroy an authenticated session.
+   /**
+     * @OA\Post(
+     *     path="/api/logout",
+     *     tags={"Auth"},
+     *     summary="Logout the authenticated user",
+     *     description="Destroys the authenticated session and logs the user out by deleting their authentication token.",
+     *     operationId="logoutUser",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successfully logged out",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Logged out successfully"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="User is not authenticated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="User is not authenticated"
+     *             )
+     *         )
+     *     ),
+     *     security={{ "sanctum": {} }}
+     * )
      */
     public function destroy(Request $request): JsonResponse
     {

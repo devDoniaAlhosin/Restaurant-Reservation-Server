@@ -3,7 +3,7 @@
 <td class="header">
 <a href="{{ $url }}" style="display: inline-block;">
 @if (trim($slot) === 'Laravel')
-<img src="http://localhost:4200/assets/img/japanese-food.svg" class="logo" alt="Laravel Logo">
+<img src="https://muthonimn.github.io/static-restaurant-website/img/japanese-food.svg" class="logo" alt="Laravel Logo">
 @else
 {{ $slot }}
 @endif

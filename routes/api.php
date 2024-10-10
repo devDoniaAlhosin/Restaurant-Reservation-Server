@@ -12,15 +12,11 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\MenuController;
+use Swagger\Swagger;
 
 
 //menu api
 Route::apiResource('menu', MenuController::class);
-
-
-//Route::post('/register', [UserController::class, 'register']);
-//Route::post('/login', [UserController::class, 'login']);
-
 
 // // Google Auth
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle']);
@@ -49,7 +45,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::patch('/admin/update-user/{user}', [UserController::class, 'updateUser']); // Admin can update any user && can't change his role to user
         Route::delete('/admin/delete-user/{user}', [UserController::class, 'deleteUser']); // cant delete his account
 
-        Route::get('/admin/contacts', [ContactController::class, 'index'])->middleware('auth:admin');
+
+        Route::get('/admin/contacts', [ContactController::class, 'index']);
         Route::delete('/admin/contacts/{id}', [ContactController::class, 'destroy']);
 
 
@@ -58,7 +55,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::patch('/bookings/{id}/status', [BookingController::class, 'updateStatus']);
     });
     Route::get('/user', [UserController::class, 'user']); // Logged-in User (admin - Normal user)
-    // Route::post('/logout', [UserController::class, 'logout']);
+
 });
 
 

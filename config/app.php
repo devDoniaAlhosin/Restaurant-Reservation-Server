@@ -193,12 +193,13 @@ return [
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
+        L5Swagger\L5SwaggerServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         CloudinaryLabs\CloudinaryLaravel\CloudinaryServiceProvider::class,
-        L5Swagger\L5SwaggerServiceProvider::class,
+
 
     ],
 
