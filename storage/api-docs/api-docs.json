@@ -1,0 +1,248 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Menu API",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/menu": {
+            "get": {
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Get a list of menu items",
+                "description": "Fetches a paginated list of all menu items. Accessible by anyone.",
+                "operationId": "3a3ec03d97e4c627a3506161fc36a01e",
+                "parameters": [
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Create a new menu item",
+                "description": "Creates a new menu item. Accessible only by admins.",
+                "operationId": "440f34e4a4498f162ab4ce2061bdc2c4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Pasta"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "Delicious pasta with sauce"
+                                    },
+                                    "category_name": {
+                                        "type": "string",
+                                        "enum": [
+                                            "breakfast",
+                                            "main_dish",
+                                            "drink",
+                                            "dessert"
+                                        ]
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 9.99
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "example": "image-url.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/menu/{menu}": {
+            "get": {
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Get a specific menu item",
+                "description": "Fetches details of a specific menu item by ID. Accessible by anyone.",
+                "operationId": "f04dc8ea37dda52a898a46ff35de7a15",
+                "parameters": [
+                    {
+                        "name": "menu",
+                        "in": "path",
+                        "description": "Menu item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Update an existing menu item",
+                "description": "Updates an existing menu item by ID. Accessible only by admins.",
+                "operationId": "d7c5981243783ca8283c74a64ed5c216",
+                "parameters": [
+                    {
+                        "name": "menu",
+                        "in": "path",
+                        "description": "Menu item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Pasta"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "Updated description"
+                                    },
+                                    "category_name": {
+                                        "type": "string",
+                                        "enum": [
+                                            "breakfast",
+                                            "main_dish",
+                                            "drink",
+                                            "dessert"
+                                        ]
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 10.99
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "example": "updated-image-url.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "Delete a menu item",
+                "description": "Deletes a specific menu item by ID. Accessible only by admins.",
+                "operationId": "e90aff91a9ee48f3d2799278f4b1c043",
+                "parameters": [
+                    {
+                        "name": "menu",
+                        "in": "path",
+                        "description": "Menu item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Menu",
+            "description": "Menu"
+        }
+    ]
+}

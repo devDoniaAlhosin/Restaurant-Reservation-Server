@@ -21,7 +21,7 @@ Route::prefix('menu')->group(function () {
 
     Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         Route::post('', [MenuController::class, 'store']);
-        Route::put('/{menu}', [MenuController::class, 'update']);
+        Route::patch('/{menu}', [MenuController::class, 'update']);
         Route::delete('/{menu}', [MenuController::class, 'destroy']);
     });
 });
