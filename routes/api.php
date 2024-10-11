@@ -15,5 +15,17 @@ use App\Http\Controllers\MenuController;
 */
 
 //menu api
-Route::apiResource('menu', MenuController::class);
+Route::prefix('menu')->group(function () {
+    Route::get('', [MenuController::class, 'index']);
+    Route::get('/{menu}', [MenuController::class, 'show']);
+
+    Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::post('', [MenuController::class, 'store']);
+        Route::put('/{menu}', [MenuController::class, 'update']);
+        Route::delete('/{menu}', [MenuController::class, 'destroy']);
+    });
+});
+
+
+
 
