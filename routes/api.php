@@ -22,10 +22,12 @@ Route::apiResource('menu', MenuController::class);
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
+Route::post('/contact', [ContactController::class, 'store']);
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::post('/contact', [ContactController::class, 'store']);
+    // Route::post('/contact', [ContactController::class, 'store']);
      Route::post('/bookings', [BookingController::class, 'userBooking']);
 
 

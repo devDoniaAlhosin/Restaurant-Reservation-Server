@@ -29,7 +29,7 @@ class UserController extends Controller
 /**
  * @OA\Get(
  *     path="/api/users",
- *     tags={"Admins"},
+ *     tags={"User Management"},
  *     summary="Get all users",
  *     @OA\Response(
  *         response=200,
@@ -77,7 +77,7 @@ class UserController extends Controller
     /**
  * @OA\Post(
  *     path="/api/admin/create-user",
- *     tags={"Admins"},
+ *     tags={"User Management"},
  *     summary="Create a new user",
  *     @OA\RequestBody(
  *         required=true,
@@ -161,7 +161,7 @@ class UserController extends Controller
         /**
      * @OA\Patch(
      *     path="/api/user/update",
-     *     tags={"Users"},
+     *     tags={"Profile Management"},
      *     summary="Update authenticated user's details",
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/User")),
      *     @OA\Response(response=200, description="User updated successfully"),
@@ -238,9 +238,9 @@ class UserController extends Controller
 
 
     /**
-     * @OA\Put(
+     * @OA\Patch(
      *     path="/api/admin/update-user/{id}",
-     *     tags={"Admins"},
+     *     tags={"User Management"},
      *     summary="Update a user's details",
      *     @OA\Parameter(name="id", in="path", required=true, description="ID of the user to update", @OA\Schema(type="integer")),
      *     @OA\RequestBody(required=true, @OA\JsonContent(ref="#/components/schemas/User")),
@@ -325,7 +325,7 @@ class UserController extends Controller
        /**
      * @OA\Delete(
      *     path="/api/admin/delete-user/{id}",
-     *     tags={"Admins"},
+     *     tags={"User Management"},
      *     summary="Delete a user",
      *     @OA\Parameter(name="id", in="path", required=true, description="ID of the user to delete", @OA\Schema(type="integer")),
      *     @OA\Response(response=204, description="User deleted successfully"),

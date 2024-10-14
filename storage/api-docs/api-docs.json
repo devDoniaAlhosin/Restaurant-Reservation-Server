@@ -421,7 +421,7 @@
         "/api/users": {
             "get": {
                 "tags": [
-                    "Admins"
+                    "User Management"
                 ],
                 "summary": "Get all users",
                 "operationId": "c457726701591d1183b53aa71fc13441",
@@ -446,7 +446,7 @@
         "/api/admin/create-user": {
             "post": {
                 "tags": [
-                    "Admins"
+                    "User Management"
                 ],
                 "summary": "Create a new user",
                 "operationId": "20dcc92a689aa2a527df22961fa2db64",
@@ -518,7 +518,7 @@
         "/api/user/update": {
             "patch": {
                 "tags": [
-                    "Users"
+                    "Profile Management"
                 ],
                 "summary": "Update authenticated user's details",
                 "operationId": "e6895b1c1b66782101e0fd8f07c09582",
@@ -546,12 +546,12 @@
             }
         },
         "/api/admin/update-user/{id}": {
-            "put": {
+            "patch": {
                 "tags": [
-                    "Admins"
+                    "User Management"
                 ],
                 "summary": "Update a user's details",
-                "operationId": "f5c4e65d132fdb3aa3922aa925064748",
+                "operationId": "c7a0679b4d621fd1807bcdcf494ac61a",
                 "parameters": [
                     {
                         "name": "id",
@@ -589,7 +589,7 @@
         "/api/admin/delete-user/{id}": {
             "delete": {
                 "tags": [
-                    "Admins"
+                    "User Management"
                 ],
                 "summary": "Delete a user",
                 "operationId": "67b84dee7d9da67ac0758df9c6febb14",
@@ -670,12 +670,12 @@
             "description": "Operations about user authentication"
         },
         {
-            "name": "Admins",
-            "description": "Admins"
+            "name": "User Management",
+            "description": "User Management"
         },
         {
-            "name": "Users",
-            "description": "Users"
+            "name": "Profile Management",
+            "description": "Profile Management"
         }
     ]
 }
