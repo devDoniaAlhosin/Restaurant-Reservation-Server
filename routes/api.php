@@ -51,12 +51,6 @@ Route::post('/email/verification-notification', [EmailVerificationNotificationCo
 
 
 
-// Payment
-Route::post('/create-payment-key/{orderId}', [PaymobController::class, 'createPaymentKey']);
-Route::post('/paymob/callback', [PaymobController::class, 'paymentCallback']);
-
-
-
 
 
 
@@ -75,7 +69,6 @@ Route::post('/contact', [ContactController::class, 'store']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/create-order/{bookingId}', [PaymobController::class, 'createOrder']);
     Route::post('/bookings', [BookingController::class, 'userBooking']);
 
 
