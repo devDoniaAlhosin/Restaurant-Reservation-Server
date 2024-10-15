@@ -15,14 +15,21 @@ class BookingStatusMail extends Mailable
     use Queueable, SerializesModels;
 
     public $booking;
-    public $messageContent;
+    // public $messageContent;
+    public $paymentLink;  // Payment link for accepted bookings
+    public $status;       // Booking status (accepted or rejected)
 
-    public function __construct(Booking $booking, $messageContent)
+    // public function __construct(Booking $booking, $messageContent)
+    // {
+    //     $this->booking = $booking;
+    //     $this->messageContent = $messageContent;
+    // }
+    public function __construct(Booking $booking, $status, $paymentLink = null)
     {
         $this->booking = $booking;
-        $this->messageContent = $messageContent;
+        $this->status = $status;
+        $this->paymentLink = $paymentLink;  // If the booking is accepted, pass the payment link
     }
-
     /**
      * Get the message envelope.
      */

@@ -14,7 +14,7 @@ class PaymentsTableSeeder extends Seeder
                 'booking_id' => 1,
                 'user_id' => 1,
                 'amount' => 23.98,
-                'payment_method' => 'credit_card',
+                'payment_method' => 'stripe',
                 'payment_status' => 'completed',
                 'payment_date' => now(),
             ],

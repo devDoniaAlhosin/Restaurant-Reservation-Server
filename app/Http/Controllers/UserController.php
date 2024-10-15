@@ -16,14 +16,40 @@ use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    // Get  all users
+    /**
+     * @OA\Get(
+     *     path="/users",
+     *     summary="Get all users",
+     *     tags={"User"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of users",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/User"))
+     *     )
+     * )
+     */
     public function index()
     {
         $users = User::all();
         return response()->json($users);
 
     }
-    // get Single User
+  /**
+     * @OA\Get(
+     *     path="/users/{id}",
+     *     summary="Get a single user by ID",
+     *     tags={"User"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="User ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="User found", @OA\JsonContent(ref="#/components/schemas/User")),
+     *     @OA\Response(response=404, description="User not found")
+     * )
+     */
     public function getUser($id)
 {
     $user = User::find($id);
@@ -36,7 +62,26 @@ class UserController extends Controller
 
 
 
-    // Register User
+/**
+ * @OA\Post(
+ *     path="/register",
+ *     summary="Register a new user",
+ *     tags={"User"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(ref="#/components/schemas/RegisterUser")
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="User registered successfully",
+ *         @OA\JsonContent(ref="#/components/schemas/User")
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Invalid input"
+ *     )
+ * )
+ */
     public function register(Request $request){
         try {
             Configuration::instance([
@@ -104,6 +149,19 @@ class UserController extends Controller
 
     }
 
+     /**
+     * @OA\Post(
+     *     path="/login",
+     *     summary="User login",
+     *     tags={"User"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/LoginUser")
+     *     ),
+     *     @OA\Response(response=200, description="Login successful", @OA\JsonContent(ref="#/components/schemas/User")),
+     *     @OA\Response(response=401, description="Invalid login credentials")
+     * )
+     */
     public function login(Request $request){
         $login = $request->input('login'); // 'username' or 'email'
         $password = $request->input('password');

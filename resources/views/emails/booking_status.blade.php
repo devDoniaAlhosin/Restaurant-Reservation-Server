@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Booking Status Update</h1>
-    <p>{{ $messageContent }}</p>
+
     <p>Booking Details:</p>
     <ul>
         <li>Username: {{ $booking->username }}</li>
@@ -18,5 +18,3 @@
     </ul>
 </body>
 </html>
-
-

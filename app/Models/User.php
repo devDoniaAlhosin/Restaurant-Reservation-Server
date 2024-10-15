@@ -10,6 +10,18 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @OA\Schema(
+ *     schema="User",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="username", type="string"),
+ *     @OA\Property(property="email", type="string"),
+ *     @OA\Property(property="phone", type="string"),
+ *     @OA\Property(property="address", type="string", nullable=true),
+ *     @OA\Property(property="role", type="string", enum={"user", "admin"}),
+ *     @OA\Property(property="image", type="string", format="uri", nullable=true)
+ * )
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;

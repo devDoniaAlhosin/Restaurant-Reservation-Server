@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\NotificationController;
 use Illuminate\Http\Request;
@@ -23,36 +24,6 @@ Route::post('/login', [UserController::class, 'login']);
 // // });
 
 
-// Route::middleware(['auth:sanctum'])->group(function () {
-//     Route::post('/bookings', [BookingController::class, 'userBooking']);
-//     Route::patch('/bookings/{id}/status', [BookingController::class, 'updateStatus']); // For updating booking status
-//     Route::post('/send-notification/{id}', [BookingController::class, 'sendNotification']);
-
-
-
-//     Route::middleware('user')->group(function () {
-//         Route::patch('/user/update', [UserController::class, 'updateOwnUser']);
-//         Route::post('/bookings', [BookingController::class, 'userBooking']);
-
-//     });
-
-//     Route::middleware('admin')->group(function () {
-//         Route::get('/users', [UserController::class, 'index']);
-//         Route::get('/admin/get-user/{user}', [UserController::class, 'getUser']);
-//         Route::post('/admin/create-user', [UserController::class, 'createUser']);
-//         Route::patch('/admin/update-user/{user}', [UserController::class, 'updateUser']); // Admin can update any user && can't change his role to user
-//         Route::delete('/admin/delete-user/{user}', [UserController::class, 'deleteUser']); // cant delete his account
-//         Route::post('/bookings', [BookingController::class, 'userBooking']);
-//         Route::get('/bookings',[BookingController::class,'getallbookings']);
-//         // Route::patch('/bookings/{id}/status', [BookingController::class, 'updateStatus']);
-//     });
-//     Route::get('/user', [UserController::class, 'user']); // Logged-in User (admin - Normal user)
-//     Route::post('/logout', [UserController::class, 'logout']);
-// // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-// //     return $request->user();
-// // });
-
-// });
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -64,7 +35,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware('user')->group(function () {
         Route::patch('/user/update', [UserController::class, 'updateOwnUser']);
         Route::patch('/bookings/{id}', [BookingController::class, 'updateUserBooking']);
-    Route::get('/bookings/my', [BookingController::class, 'getUserBookings']);
+        Route::get('/bookings/my', [BookingController::class, 'getUserBookings']);
 
     });
 
@@ -78,6 +49,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/bookings', [BookingController::class, 'getAllBookings']); // Get all bookings for admin
         Route::delete('/bookings/{id}', [BookingController::class, 'deleteBooking']);
         Route::patch('/bookings/{id}/status', [BookingController::class, 'updateStatus']);
-
     });
 });
