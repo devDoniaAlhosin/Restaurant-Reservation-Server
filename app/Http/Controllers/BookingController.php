@@ -9,6 +9,9 @@ use Illuminate\Support\Carbon;
 use App\Mail\BookingStatusMail;
 use Illuminate\Support\Facades\Log;
 use App\Models\Payment;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
+
 /**
  * @OA\Info(
  *     title="Restaurant Booking API",
@@ -143,42 +146,57 @@ public function getallbookings(){
     return response()->json($booking,200);
 }
 
-   /**
-     * @OA\Patch(
-     *     path="/bookings/{id}/status",
-     *     summary="Update the booking status",
-     *     tags={"Bookings"},
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"status"},
-     *             @OA\Property(property="status", type="string", enum={"accepted", "rejected"}),
-     *             @OA\Property(property="notes", type="string", example="Booking confirmed")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Booking status updated and email sent",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Booking status updated and email sent")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Booking not found"
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Validation error"
-     *     )
-     * )
-     */
+  /**
+ * @OA\Patch(
+ *     path="/bookings/{id}/status",
+ *     summary="Update booking status",
+ *     description="Updates the status of a booking and sends an email notification to the user with the payment link if accepted.",
+ *     operationId="updateBookingStatus",
+ *     tags={"Bookings"},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="ID of the booking to update",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="status", type="string", enum={"accepted", "rejected"}, description="New status of the booking"),
+ *             @OA\Property(property="notes", type="string", nullable=true, description="Optional notes for the booking")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Booking status updated and email sent",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Booking status updated and email sent")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Invalid input",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="error", type="string", example="Invalid payload")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Booking not found",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="error", type="string", example="Booking not found")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Internal server error",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="error", type="string", example="Failed to send email")
+ *         )
+ *     ),
+ * )
+ */
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
@@ -193,6 +211,11 @@ public function getallbookings(){
         $booking->notes = $request->notes;
         $booking->save();
 
+        $paymentLink = '';
+        if ($booking->status === 'accepted') {
+            $paymentLink = 'https://buy.stripe.com/test_8wMeVv1SFfYvgb6289';
+        }
+
         // Notify the user via email
         $user = $booking->user;
         $messageContent = ($booking->status === 'accepted')
@@ -200,14 +223,14 @@ public function getallbookings(){
             : "Your booking has been rejected. Please see alternative dates.";
 
         try {
-            Mail::to($user->email)->send(new BookingStatusMail($booking, $messageContent));
+            // Pass the payment link to the Mailable
+            Mail::to($user->email)->send(new BookingStatusMail($booking, $messageContent, $paymentLink));
             Log::info('Mail sent successfully to: ' . $user->email);
         } catch (\Exception $e) {
             Log::error('Failed to send email: ' . $e->getMessage());
         }
 
 
-        // Mark email as sent
         $booking->email_sent = true;
         $booking->save();
 

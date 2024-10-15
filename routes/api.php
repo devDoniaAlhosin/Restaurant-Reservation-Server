@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleController;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\StripeWebhookController;
 
 
 Route::post('/register', [UserController::class, 'register']);
@@ -27,11 +28,11 @@ Route::post('/login', [UserController::class, 'login']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    // Routes accessible to both users and admins
+ 
     Route::post('/bookings', [BookingController::class, 'userBooking']);
     Route::get('/user', [UserController::class, 'user']);
     Route::post('/logout', [UserController::class, 'logout']);
-    // Routes specific to normal users
+
     Route::middleware('user')->group(function () {
         Route::patch('/user/update', [UserController::class, 'updateOwnUser']);
         Route::patch('/bookings/{id}', [BookingController::class, 'updateUserBooking']);

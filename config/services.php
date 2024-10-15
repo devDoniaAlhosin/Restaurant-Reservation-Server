@@ -29,10 +29,10 @@ return [
     'api_key' => env('PAYMOB_API_KEY'),
     'integration_id' => env('PAYMOB_INTEGRATION_ID'),
 ],
-// 'stripe' => [
-//         'secret' => env('STRIPE_SECRET'),
-//         'key' => env('STRIPE_KEY'),
-//     ],
+'stripe' => [
+        'secret' => env('STRIPE_SECRET'),
+        'key' => env('STRIPE_KEY'),
+    ],
 
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),

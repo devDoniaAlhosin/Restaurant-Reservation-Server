@@ -15,21 +15,16 @@ class BookingStatusMail extends Mailable
     use Queueable, SerializesModels;
 
     public $booking;
-    // public $messageContent;
-    public $paymentLink;  // Payment link for accepted bookings
-    public $status;       // Booking status (accepted or rejected)
+    public $status;
+    public $paymentLink;  // Add payment link variable
 
-    // public function __construct(Booking $booking, $messageContent)
-    // {
-    //     $this->booking = $booking;
-    //     $this->messageContent = $messageContent;
-    // }
     public function __construct(Booking $booking, $status, $paymentLink = null)
     {
         $this->booking = $booking;
         $this->status = $status;
-        $this->paymentLink = $paymentLink;  // If the booking is accepted, pass the payment link
+        $this->paymentLink = $paymentLink;  // Assign the payment link
     }
+
     /**
      * Get the message envelope.
      */
@@ -37,7 +32,6 @@ class BookingStatusMail extends Mailable
     {
         return new Envelope(
             subject: 'Booking Status Mail',
-
         );
     }
 
@@ -50,18 +44,28 @@ class BookingStatusMail extends Mailable
             view: 'emails.booking_status',
         );
     }
+
+    /**
+     * Build the message.
+     */
     public function build()
     {
         return $this->subject('Booking Status Update')
-                        ->view('emails.booking_status');
-        }
-        /**
-         * Get the attachments for the message.
-         *
-         * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-         */
-        public function attachments(): array
-        {
-            return [];
-        }
+                    ->view('emails.booking_status')
+                    ->with([
+                        'booking' => $this->booking,
+                        'status' => $this->status,
+                        'paymentLink' => $this->paymentLink,  // Pass payment link to the view
+                    ]);
     }
+
+    /**
+     * Get the attachments for the message.
+     *
+     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     */
+    public function attachments(): array
+    {
+        return [];
+    }
+}
