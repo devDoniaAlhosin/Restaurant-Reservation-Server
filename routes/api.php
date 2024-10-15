@@ -59,7 +59,19 @@ Route::post('/email/verification-notification', [EmailVerificationNotificationCo
 
 
 //menu api
-Route::apiResource('menu', MenuController::class);
+Route::prefix('menu')->group(function () {
+    Route::get('', [MenuController::class, 'index']);
+    Route::get('/{menu}', [MenuController::class, 'show']);
+
+    Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::post('', [MenuController::class, 'store']);
+        Route::patch('/{menu}', [MenuController::class, 'update']);
+        Route::delete('/{menu}', [MenuController::class, 'destroy']);
+    });
+});
+
+
+
 
 // // Google Auth
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirectToGoogle']);
