@@ -12,9 +12,45 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @OA\Tag(
+ *     name="Auth",
+ *     description="Operations about user authentication"
+ * )
+ */
 class NewPasswordController extends Controller
 {
-    /**
+  /**
+     * @OA\Post(
+     *     path="/api/reset-password",
+     *     summary="Reset a user's password",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"token", "email", "password", "password_confirmation"},
+     *             @OA\Property(property="token", type="string", example="abc123xyz"),
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", example="NewPassword123"),
+     *             @OA\Property(property="password_confirmation", type="string", example="NewPassword123"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Password reset successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="Password reset successfully."),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *         )
+     *     )
+     * )
+     *
      * Handle an incoming new password request.
      *
      * @throws \Illuminate\Validation\ValidationException

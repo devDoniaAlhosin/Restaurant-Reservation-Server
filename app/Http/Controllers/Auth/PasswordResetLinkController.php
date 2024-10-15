@@ -8,9 +8,43 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @OA\Tag(
+ *     name="Auth",
+ *     description="Operations about user authentication"
+ * )
+ */
+
 class PasswordResetLinkController extends Controller
 {
-    /**
+/**
+     * @OA\Post(
+     *     path="/api/forgot-password",
+     *     summary="Request a password reset link",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email"},
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Password reset link sent successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="Password reset link sent to your email address."),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The email must be a valid email address."),
+     *         )
+     *     )
+     * )
+     *
      * Handle an incoming password reset link request.
      *
      * @throws \Illuminate\Validation\ValidationException

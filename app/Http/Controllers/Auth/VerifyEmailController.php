@@ -12,62 +12,63 @@ use Illuminate\Support\Facades\URL;
 
 class VerifyEmailController extends Controller
 {
- /**
-     * @OA\Get(
-     *     path="/api/verify-email/{id}/{hash}",
-     *     tags={"Auth"},
-     *     summary="Verify user's email using ID and hash",
-     *     description="This endpoint verifies the user's email using a signed URL. It requires the user ID and verification hash in the URL.",
-     *     operationId="verifyEmailByIdHash",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="User ID",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
-     *         name="hash",
-     *         in="path",
-     *         required=true,
-     *         description="Verification hash",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Email address successfully verified",
-     *         @OA\JsonContent(
-     *             type="string",
-     *             example="Email address successfully verified"
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid verification link",
-     *         @OA\JsonContent(
-     *             type="string",
-     *             example="Invalid verification link"
-     *         )
-     *     ),
-     *     security={{ "sanctum": {} }},
-     *     @OA\Response(
-     *         response=429,
-     *         description="Too many requests",
-     *         @OA\JsonContent(
-     *             type="string",
-     *             example="Too many requests. Please try again later."
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized",
-     *         @OA\JsonContent(
-     *             type="string",
-     *             example="Unauthenticated."
-     *         )
-     *     )
-     * )
-     */
+/**
+ * @OA\Get(
+ *     path="/api/verify-email/{id}/{hash}",
+ *     tags={"Auth"},
+ *     summary="Verify user's email using ID and hash",
+ *     description="This endpoint verifies the user's email using a signed URL. It requires the user ID and verification hash in the URL.",
+ *     operationId="verifyEmailByIdHash",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="User ID",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Parameter(
+ *         name="hash",
+ *         in="path",
+ *         required=true,
+ *         description="Verification hash",
+ *         @OA\Schema(type="string")
+ *     ),
+ *     security={{ "bearerAuth": {} }},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Email address successfully verified",
+ *         @OA\JsonContent(
+ *             type="string",
+ *             example="Email address successfully verified"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Invalid verification link",
+ *         @OA\JsonContent(
+ *             type="string",
+ *             example="Invalid verification link"
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=429,
+ *         description="Too many requests",
+ *         @OA\JsonContent(
+ *             type="string",
+ *             example="Too many requests. Please try again later."
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized",
+ *         @OA\JsonContent(
+ *             type="string",
+ *             example="Bearer token missing or invalid"
+ *         )
+ *     )
+ * )
+ */
+
     public function __invoke(EmailVerificationRequest $request): RedirectResponse|JsonResponse
     // RedirectResponse ,JsonResponse
     {

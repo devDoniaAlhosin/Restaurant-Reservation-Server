@@ -13,6 +13,55 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\MenuController;
 use Swagger\Swagger;
+use App\Http\Controllers\PaymobController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\VerifyEmailController;
+
+
+// Auth
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+->name('login');
+
+Route::post('/register', [RegisteredUserController::class, 'store'])
+    ->name('register');
+
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->name('password.email');
+
+Route::post('/reset-password', [NewPasswordController::class, 'store'])
+    ->name('password.store');
+
+Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)
+     ->middleware(['auth:sanctum', 'signed', 'throttle:6,1'])
+     ->name('verification.verify');
+
+Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+     ->middleware(['auth:sanctum', 'throttle:6,1'])
+     ->name('verification.send');
+
+
+
+
+
+
+
+
+
+// Payment
+Route::post('/create-payment-key/{orderId}', [PaymobController::class, 'createPaymentKey']);
+Route::post('/paymob/callback', [PaymobController::class, 'paymentCallback']);
+
+
+
+
+
+
+
+
 
 
 //menu api
@@ -26,9 +75,8 @@ Route::post('/contact', [ContactController::class, 'store']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-
-    // Route::post('/contact', [ContactController::class, 'store']);
-     Route::post('/bookings', [BookingController::class, 'userBooking']);
+    Route::post('/create-order/{bookingId}', [PaymobController::class, 'createOrder']);
+    Route::post('/bookings', [BookingController::class, 'userBooking']);
 
 
 
