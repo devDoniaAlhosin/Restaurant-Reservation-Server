@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:4200'],
+    'allowed_origins' => ['http://localhost:4200' , 'https://restaurant-reservation-pwuhlme15-devdoniaalhosins-projects.vercel.app'],
 
     'allowed_origins_patterns' => [],
 
