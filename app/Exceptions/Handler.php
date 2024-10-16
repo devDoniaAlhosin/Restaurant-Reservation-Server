@@ -48,4 +48,26 @@ class Handler extends ExceptionHandler
             ]);
         });
     }
+    public function render($request, Throwable $exception)
+    {
+        // Log request data
+        \Log::error('Request Data: ', $request->all());
+
+        if ($exception instanceof \Illuminate\Validation\ValidationException) {
+            return response()->json([
+                'error' => 'Validation Error',
+                'messages' => $exception->validator->errors(),
+            ], 422);
+        }
+
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+            return response()->json([
+                'error' => 'HTTP Error',
+                'message' => $exception->getMessage(),
+                'status' => $exception->getStatusCode(),
+            ], $exception->getStatusCode());
+        }
+
+        return parent::render($request, $exception);
+    }
 }
