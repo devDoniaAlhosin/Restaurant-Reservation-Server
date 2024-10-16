@@ -8,7 +8,6 @@
         "php": "^8.1",
         "cloudinary-labs/cloudinary-laravel": "^2.2",
         "darkaonline/l5-swagger": "^8.6",
-        "darkaonline/l5-swagger": "^8.6",
         "darkaonline/swagger-lume": "^11.0",
         "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^10.0",
@@ -17,8 +16,6 @@
         "laravel/tinker": "^2.8",
         "stripe/stripe-php": "^16.1",
         "symfony/http-client": "^7.1",
-        "symfony/mailgun-mailer": "^7.1",
-        "zircote/swagger-php": "^4.11"
         "symfony/mailgun-mailer": "^7.1",
         "zircote/swagger-php": "^4.11"
     },
