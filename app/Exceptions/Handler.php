@@ -51,7 +51,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         // Log request data
-        \Log::error('Request Data: ', $request->all());
+        Log::error('Request Data: ', $request->all());
 
         if ($exception instanceof \Illuminate\Validation\ValidationException) {
             return response()->json([
