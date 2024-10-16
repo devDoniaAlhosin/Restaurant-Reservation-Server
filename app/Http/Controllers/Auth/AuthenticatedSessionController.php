@@ -56,7 +56,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-
+        Log::info('Incoming Request Data:', $request->all());
 
         $login = $request->input('login'); // 'username' or 'email'
         $password = $request->input('password');
