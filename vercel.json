@@ -7,13 +7,13 @@
         }
     },
     "routes": [{
-        "src": "/(.*)",
+        "src": "/api/(.*)",
         "dest": "/api/index.php"
     }],
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "false",
-        "APP_URL": "https://restaurant-reservation-xi.vercel.app",
+
 
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
