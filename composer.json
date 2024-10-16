@@ -15,7 +15,10 @@
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.8",
+        "stripe/stripe-php": "^16.1",
         "symfony/http-client": "^7.1",
+        "symfony/mailgun-mailer": "^7.1",
+        "zircote/swagger-php": "^4.11"
         "symfony/mailgun-mailer": "^7.1",
         "zircote/swagger-php": "^4.11"
     },

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\NotificationController;
 
@@ -11,15 +12,16 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\MenuController;
 use Swagger\Swagger;
-use App\Http\Controllers\PaymobController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+
 
 
 // Auth
@@ -82,12 +84,10 @@ Route::post('/contact', [ContactController::class, 'store']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/bookings', [BookingController::class, 'userBooking']);
-
-
-
     Route::middleware('user')->group(function () {
         Route::patch('/user/update', [UserController::class, 'updateOwnUser']);
         Route::patch('/bookings/{id}', [BookingController::class, 'updateUserBooking']);
+        Route::get('/bookings/my', [BookingController::class, 'getUserBookings']);
         Route::get('/bookings/my', [BookingController::class, 'getUserBookings']);
 
     });

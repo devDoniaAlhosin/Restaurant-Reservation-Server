@@ -20,9 +20,11 @@ use OpenApi\Annotations as OA;
  * @OA\Info(
  *     title="Bistro Bliss API",
  *     version="1.0.0",
- *     description="A brief description of your API"
+ *     description="This is the API documentation for the Bistro Bliss restaurant project"
  * )
  */
+
+
 class UserController extends Controller
 {
 

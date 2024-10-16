@@ -38,6 +38,8 @@ class Payment extends Model
     {
         return $query->where('payment_status', $status);
     }
+
+   
 // scopeMethod(): Allows filtering by payment_method (e.g., credit card, PayPal, cash).
     public function scopeMethod($query, $method)
     {
