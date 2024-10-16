@@ -14,7 +14,7 @@
         "APP_ENV": "production",
         "APP_DEBUG": "true",
         "APP_URL": "https://restaurant-server-b12blbhlw-devdoniaalhosins-projects.vercel.app",
-       " APP_KEY":"base64:CfMjPqm6EQ7E8fiGjyHf2pkygmqkXpJ+rDxa2w6VqGU=",
+        "APP_KEY":"base64:CfMjPqm6EQ7E8fiGjyHf2pkygmqkXpJ+rDxa2w6VqGU=",
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
