@@ -13,6 +13,7 @@
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.16",
+        "laravel/telescope": "^5.2",
         "laravel/tinker": "^2.8",
         "stripe/stripe-php": "^16.1",
         "symfony/http-client": "^7.1",
