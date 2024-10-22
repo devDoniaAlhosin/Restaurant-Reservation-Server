@@ -32,9 +32,9 @@ return [
     |
     |
     */
-    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'), // Add this line
-    'api_key' => env('CLOUDINARY_API_KEY'),     // Add this line
-    'api_secret' => env('CLOUDINARY_API_SECRET'), // Add this line
+    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+    'api_key' => env('CLOUDINARY_API_KEY'),
+    'api_secret' => env('CLOUDINARY_API_SECRET'),
 
     'cloud_url' => env('CLOUDINARY_URL'),
 
