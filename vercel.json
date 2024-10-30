@@ -2,29 +2,48 @@
     "version": 2,
     "framework": null,
     "functions": {
-        "api/index.php": {
-           "runtime": "vercel-php@0.7.2"
-        }
+      "api/index.php": {
+        "runtime": "vercel-php@0.7.2"
+      }
     },
- "routes": [{
+    "routes": [
+      {
         "src": "/(.*)",
         "dest": "/api/index.php"
-    }],
+      }
+    ],
+    "headers": [
+      {
+        "source": "/(.*)",
+        "headers": [
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "http://localhost:4200"
+          },
+          {
+            "key": "Access-Control-Allow-Methods",
+            "value": "GET,POST,PUT,DELETE,OPTIONS"
+          },
+          {
+            "key": "Access-Control-Allow-Headers",
+            "value": "Content-Type, Authorization"
+          }
+        ]
+      }
+    ],
     "env": {
-        "APP_ENV": "production",
-        "APP_DEBUG": "true",
-        "APP_URL": "https://restaurant-server-c21uyjyp8-devdoniaalhosins-projects.vercel.app",
-        "APP_KEY":"base64:CfMjPqm6EQ7E8fiGjyHf2pkygmqkXpJ+rDxa2w6VqGU=",
-
-        "APP_CONFIG_CACHE": "/tmp/config.php",
-        "APP_EVENTS_CACHE": "/tmp/events.php",
-        "APP_PACKAGES_CACHE": "/tmp/packages.php",
-        "APP_ROUTES_CACHE": "/tmp/routes.php",
-        "APP_SERVICES_CACHE": "/tmp/services.php",
-        "VIEW_COMPILED_PATH": "/tmp",
-
-        "CACHE_DRIVER": "array",
-        "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie"
+      "APP_ENV": "production",
+      "APP_DEBUG": "true",
+      "APP_URL": "https://restaurant-server-c21uyjyp8-devdoniaalhosins-projects.vercel.app",
+      "APP_KEY": "base64:CfMjPqm6EQ7E8fiGjyHf2pkygmqkXpJ+rDxa2w6VqGU=",
+      "APP_CONFIG_CACHE": "/tmp/config.php",
+      "APP_EVENTS_CACHE": "/tmp/events.php",
+      "APP_PACKAGES_CACHE": "/tmp/packages.php",
+      "APP_ROUTES_CACHE": "/tmp/routes.php",
+      "APP_SERVICES_CACHE": "/tmp/services.php",
+      "VIEW_COMPILED_PATH": "/tmp",
+      "CACHE_DRIVER": "array",
+      "LOG_CHANNEL": "stderr",
+      "SESSION_DRIVER": "cookie"
     }
-}
+  }
